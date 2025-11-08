@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Coronary Artery Disease Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <h1>🫀 Coronary Artery Disease Predictor</h1>
+
+    <form method="post">
+
+        <label>
+            Resting Blood Pressure (trestbps)
+            <span class="info-icon"
+                  data-tooltip="Resting blood pressure measured in mmHg on admission to the hospital.
+Normal range: 90–140 mmHg. High values can indicate hypertension, a major CAD risk factor.">
+                ℹ️
+            </span>
+        </label>
+        <input type="number" name="trestbps" step="1" min="80" max="200" required>
+
+        <label>
+            ST Depression (oldpeak)
+            <span class="info-icon"
+                  data-tooltip="ST segment depression induced by exercise relative to rest (in mm).
+Higher values indicate greater ischemia or stress-related heart strain.">
+                ℹ️
+            </span>
+        </label>
+        <input type="number" name="oldpeak" step="0.1" min="0" max="7" required>
+
+
+        <label>
+            Sex
+            <span class="info-icon"
+                  data-tooltip="Biological sex of the patient: 0 = Female, 1 = Male.
+Used as a risk factor since CAD prevalence differs by sex.">
+                ℹ️
+            </span>
+        </label>
+        <select name="sex">
+            <option value="0">Female</option>
+            <option value="1">Male</option>
+        </select>
+
+        <label>
+            Fasting Blood Sugar (fbs)
+            <span class="info-icon"
+                  data-tooltip="Indicates if fasting blood sugar > 120 mg/dL:
+0 = False, 1 = True.
+High blood sugar is associated with diabetes, a major CAD risk factor.">
+                ℹ️
+            </span>
+        </label>
+        <select name="fbs">
+            <option value="0">False (&lt; 120 mg/dl)</option>
+            <option value="1">True (&gt; 120 mg/dl)</option>
+        </select>
+
+        <label>
+            Slope of Peak Exercise ST Segment (slope)
+            <span class="info-icon"
+                  data-tooltip="Shows how the ST segment on the ECG changes during exercise.
+0 = Upsloping (normal), 1 = Flat (possible ischemia), 2 = Downsloping (abnormal).">
+                ℹ️
+            </span>
+        </label>
+        <select name="slope" required>
+            <option value="0">0 - Upsloping</option>
+            <option value="1">1 - Flat</option>
+            <option value="2">2 - Downsloping</option>
+        </select>
+
+        <label>
+            Number of Major Vessels (ca)
+            <span class="info-icon"
+                  data-tooltip="Number of major coronary vessels (0–3) showing abnormalities on fluoroscopy.
+In this dataset, higher values are associated with a higher chance of coronary artery disease.">
+                ℹ️
+            </span>
+        </label>
+        <select name="ca">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+        </select>
+
+        <label>
+            Resting ECG (restecg)
+            <span class="info-icon"
+                  data-tooltip="Resting electrocardiographic results:
+0 = Normal, 1 = ST-T wave abnormality (possible ischemia), 2 = Left ventricular hypertrophy (LVH).">
+                ℹ️
+            </span>
+        </label>
+        <select name="restecg">
+            <option value="0">0 - Normal</option>
+            <option value="1">1 - ST-T abnormality</option>
+            <option value="2">2 - LV hypertrophy</option>
+        </select>
+
+        <button type="submit">Predict</button>
+    </form>
+
+    {% if prediction %}
+    <div class="result {% if 'No' in prediction %}negative{% else %}positive{% endif %}">
+        <p>{{ prediction }}</p>
+        <p class="probability">Predicted probability: {{ probability }}%</p>
+    </div>
+    {% endif %}
+
+    <div class="footer">
+        ⚠ For educational use only. Not a medical diagnostic tool.
+    </div>
+</div>
+</body>
+</html>
