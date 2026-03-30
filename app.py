@@ -1,11 +1,15 @@
 from flask import Flask, render_template, request
 import joblib
 import pandas as pd
+import os
 
 app = Flask(__name__)
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "cad_rf_pipeline.pkl")
+
 # Loading the saved Random Forest model
-model = joblib.load("cad_rf_pipeline.pkl")
+model = joblib.load(MODEL_PATH)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -13,7 +17,6 @@ def index():
     probability = None
 
     if request.method == "POST":
-        # Collecting from data
         trestbps = float(request.form["trestbps"])
         oldpeak = float(request.form["oldpeak"])
         sex = int(request.form["sex"])
@@ -22,7 +25,6 @@ def index():
         ca = int(request.form["ca"])
         restecg = int(request.form["restecg"])
 
-        # creating dataframe with same columns as during training
         input_df = pd.DataFrame([{
             "trestbps": trestbps,
             "oldpeak": oldpeak,
@@ -33,7 +35,6 @@ def index():
             "restecg": restecg
         }])
 
-        # predicting
         y_pred = model.predict(input_df)[0]
         y_proba = model.predict_proba(input_df)[0][1]
 
@@ -44,10 +45,11 @@ def index():
 
         probability = round(y_proba * 100, 2)
 
-    return render_template("index.html",
-                           prediction=prediction_text,
-                           probability=probability)
-
+    return render_template(
+        "index.html",
+        prediction=prediction_text,
+        probability=probability
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)
